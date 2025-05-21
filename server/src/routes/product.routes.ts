@@ -18,7 +18,7 @@ const router = Router();
  *       200:
  *         description: returns a list of products
  */
-router.get('', getProducts);
+router.get('/all', getProducts);
 
 /**
  * @swagger

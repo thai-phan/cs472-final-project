@@ -3,26 +3,31 @@ import {pool} from '../models/db';
 import {Product} from "../models/product.model";
 
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).json(Product.getProducts());
+  const result = await Product.getProducts();
+  res.status(200).json(result);
 };
 
 export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
   const {id} = req.params;
-  res.status(200).json(Product.getProductById(parseInt(id)));
+  const result = await Product.getProductById(parseInt(id));
+  res.status(200).json(result);
 }
 
 export const addProduct = async (req: Request, res: Response, next: NextFunction) => {
   const product: Product = req.body;
-  res.status(200).json(Product.addProduct(product))
+  const result = await Product.addProduct(product);
+  res.status(200).json(result)
 }
 
 export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
   const product: Product = req.body;
-  res.status(200).json(Product.updateProduct(product));
+  const result = await Product.updateProduct(product);
+  res.status(200).json(result);
 }
 
 export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).json(Product.deleteProduct(req.body.id));
+  const result = await Product.deleteProduct(req.body.id);
+  res.status(200).json(result);
 }
 
 

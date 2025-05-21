@@ -21,7 +21,7 @@ export class Product {
   static getProducts = async () => {
     try {
       const conn = await pool.getConnection();
-      const [products] = await conn.query("SELECT * FROM product");
+      const products = await conn.query("SELECT * FROM product");
       conn.release();
       return products;
     } catch (error) {
@@ -44,7 +44,7 @@ export class Product {
     try {
       const {name, description, category, price, dateAdded} = product;
       const conn = await pool.getConnection();
-      const result = await conn.query("INSERT INTO product (productId, description, category, price, date_added) VALUES (?, ?, ?, ?, ?)",
+      const result = await conn.query("INSERT INTO product (name, description, category, price, date_added) VALUES (?, ?, ?, ?, ?)",
           [name, description, category, price, dateAdded]);
       await conn.release();
       return result
