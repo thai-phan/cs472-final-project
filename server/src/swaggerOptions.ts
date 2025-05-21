@@ -7,7 +7,7 @@ const options = {
       description: 'A simple API',
     },
   },
-  apis: ['./routes/*.js'], // Path to the API routes
+  apis: ['./src/routes/*.ts', './src/app.ts'], // Path to the API routes
 };
 
 export default options;
