@@ -84,7 +84,7 @@ router.get('/:pid/reviews', getReviewFromProduct);
  *       200:
  *         description: returns a new review
  */
-router.post('/:pid/review', addReviewForProduct);
+router.post('/:pid/reviews', addReviewForProduct);
 
 /**
  * @swagger
@@ -95,7 +95,7 @@ router.post('/:pid/review', addReviewForProduct);
  *       200:
  *         description: returns the updated review
  */
-router.put('/:pid/review/:rid', updateReviewForProduct);
+router.put('/:pid/reviews/:rid', updateReviewForProduct);
 
 /**
  * @swagger
@@ -106,6 +106,6 @@ router.put('/:pid/review/:rid', updateReviewForProduct);
  *       200:
  *         description: returns the deleted review
  */
-router.delete('/:pid/review/:rid', deleteReviewFromProduct);
+router.delete('/:pid/reviews/:rid', deleteReviewFromProduct);
 
 export default router;

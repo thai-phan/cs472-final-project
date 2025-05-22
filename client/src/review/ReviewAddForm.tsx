@@ -1,46 +1,27 @@
 import React, {type ChangeEvent, useState} from "react";
 
 
-const ReviewAddForm = ({id}: {id: string}) => {
+const ReviewAddForm = ({onAdd}: {
+  onAdd: (author: string, email: string, rating: number, comment: string) => void
+}) => {
   const [author, setAuthor] = useState("");
   const [email, setEmail] = useState("");
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState("5");
 
-  const addReview = () => {
-    const review = {
-      productId: id,
-      author,
-      authorEmail: email,
-      rating,
-      comment,
-      date: new Date(),
-    };
 
-
-    fetch(`http://localhost:3000/products/${id}/review`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(review),
-    }).then(res => {
-      if (res.ok) {
-        alert("Review added successfully");
-      } else {
-        alert("Failed to add review");
-      }
-    }).then()
+  const onAddLocal = () => {
+    onAdd(author, email, parseInt(rating), comment)
   }
-
-
 
   return (
 
       <div className="review-form">
         <div className="form-title">Write a Review</div>
 
-        <select className="select" required value={rating} onChange={(e: ChangeEvent<HTMLSelectElement>) => {setRating(e.target.value)}}>
+        <select className="select" required value={rating} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+          setRating(e.target.value)
+        }}>
           <option value="5">★★★★★ - Excellent</option>
           <option value="4">★★★★☆ - Good</option>
           <option value="3">★★★☆☆ - Average</option>
@@ -64,7 +45,7 @@ const ReviewAddForm = ({id}: {id: string}) => {
                     onChange={event => setComment(event.target.value)}/>
         </div>
         <div className={"mt-3"}>
-          <button className={"btn btn-soft btn-info"} onClick={addReview}>Add review</button>
+          <button className={"btn btn-soft btn-info"} onClick={onAddLocal}>Add review</button>
         </div>
       </div>
   )

@@ -26,7 +26,8 @@ export class Review {
       const conn = await pool.getConnection();
       const reviews = await conn.query("SELECT * FROM review WHERE product_id = ?", [id]);
       await conn.release();
-      return reviews;
+      return reviews.map((review: any) => new Review(review.id, review.product_id, review.author,
+          review.author_email, review.rating, review.comment, review.date));
     } catch (error) {
       throw new Error('Error fetching reviews');
     }

@@ -1,5 +1,5 @@
 export interface IReview {
-  id: number;
+  id?: number;
   productId: number;
   author: string;
   authorEmail: string;

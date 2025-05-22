@@ -1,19 +1,20 @@
 import type {IReview} from "./IReview.ts";
-import React from "react";
+import React, {type Dispatch, type SetStateAction} from "react";
 import userImg from "../../public/user.svg"
+import ReviewEditForm from "./ReviewEditForm.tsx";
+import {ReviewContext} from "./ReviewWrapper.tsx";
 
-const ReviewCard = (
-    {
-      review,
-      onDelete,
-      onEdit,
-    }: {
-      review: IReview,
-      onDelete: (id: number) => void,
-      onEdit: (id: number) => void,
-    }) => {
+const ReviewCard = ({review, setReview}: { review: IReview, setReview: Dispatch<SetStateAction<IReview>> }) => {
+
+  const {onDeleteReview} = React.useContext(ReviewContext);
+
   const ShowStar = (rating: number) => {
     return "★".repeat(rating) + "☆".repeat(5 - rating);
+  }
+
+  const onEditLocal = () => {
+    (document.getElementById('review_modal') as HTMLFormElement).showModal();
+    setReview(review)
   }
 
   return (
@@ -34,12 +35,13 @@ const ReviewCard = (
               {review.comment}
             </div>
           </div>
+
           <div className={"flex-1/3"}>
             <div className={"mb-2"}>
-              <button className={"btn btm-sm"} onClick={() => onEdit(review.id)}> Edit review</button>
+              <button className="btn" onClick={onEditLocal}>Edit</button>
             </div>
             <div>
-              <button className={"btn btm-sm"} onClick={() => onDelete(review.id)}>Delete review</button>
+              <button className={"btn btm-sm"} onClick={() => onDeleteReview(review.id)}>Delete</button>
             </div>
           </div>
         </div>
