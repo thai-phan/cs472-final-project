@@ -1,5 +1,5 @@
 import {pool} from './db';
-import {Request, Response, NextFunction} from 'express';
+import {Product} from "./product.model";
 
 export class Review {
   id: number | null;
@@ -41,6 +41,7 @@ export class Review {
     const conn = await pool.getConnection();
     const result = await conn.query("INSERT INTO review (product_id, author, author_email, rating, comment, date) VALUES (?, ?, ?, ?, ?, ?)",
         [productId, author, authorEmail, rating, comment, new Date(date)]);
+    await Product.updateProductRating(conn, productId);
     await conn.release();
     return result;
   }
@@ -54,6 +55,8 @@ export class Review {
     const result = await conn.query("UPDATE review SET  product_id = ?, author = ?, author_email = ?, " +
         "rating = ? , comment = ?, date = ? WHERE id = ?",
         [productId, author, authorEmail, rating, comment, new Date(date), id]);
+    await Product.updateProductRating(conn, productId);
+
     await conn.release();
     if (result.affectedRows === 0) {
       throw new Error('Error updating review');
@@ -63,7 +66,9 @@ export class Review {
 
   static deleteReview = async (id: string) => {
     const conn = await pool.getConnection();
+    const [review] = await conn.query("SELECT * FROM review WHERE id = ?", [id]);
     const result = await conn.query("DELETE FROM review WHERE id = ?", [id]);
+    await Product.updateProductRating(conn, review.product_id);
     await conn.release();
     if (result.affectedRows === 0) {
       throw new Error('Error deleting review');

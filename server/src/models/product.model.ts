@@ -1,5 +1,6 @@
 import {pool} from './db';
-import {Request, Response, NextFunction} from 'express';
+import {Review} from "./review.model";
+import {PoolConnection} from "mariadb";
 
 export class Product {
   id: number;
@@ -29,7 +30,30 @@ export class Product {
     try {
       const conn = await pool.getConnection();
       const products = await conn.query("SELECT * FROM product");
-      conn.release();
+      await conn.release();
+      return products.map(((product: any) =>
+          new Product(product.id, product.name, product.category, product.description, product.date_added,
+              product.price, product.average_rating, product.image_url, product.review_count)));
+    } catch (error) {
+      throw new Error('Error fetching products');
+    }
+  }
+
+  static searchProducts = async (keyword: string, category: string) => {
+    try {
+      const conn = await pool.getConnection();
+
+      const categories = category != "" ? category.split(",") : [];
+      let products
+      if (categories.length !== 0 && keyword) {
+        products = await conn.query("SELECT * FROM product where name like ? and category in (?)", [`%${keyword}%`, categories]);
+      } else if(categories.length !== 0) {
+        products = await conn.query("SELECT * FROM product where category in (?)", [categories]);
+      } else {
+        products = await conn.query("SELECT * FROM product where name like ?", [`%${keyword}%`]);
+
+      }
+      await conn.release();
       return products.map(((product: any) =>
           new Product(product.id, product.name, product.category, product.description, product.date_added,
               product.price, product.average_rating, product.image_url, product.review_count)));
@@ -85,6 +109,19 @@ export class Product {
       throw new Error("Product not found");
     }
     return result;
+  }
+
+  static updateProductRating = async (conn: PoolConnection, pid: number) => {
+    const reviews = await conn.query("SELECT * FROM review WHERE product_id = ?", [pid]);
+    const reviewCount = reviews.length;
+    const sum = reviews.reduce((acc: number, review: Review) => acc + review.rating, 0);
+    const average_rating = sum / reviewCount;
+
+    const result = await conn.query("UPDATE product SET average_rating = ?, review_count = ? WHERE id = ?", [average_rating, reviewCount, pid]);
+    if (result.affectedRows === 0) {
+      throw new Error("Updated product not found");
+    }
+    return average_rating;
   }
 
 }

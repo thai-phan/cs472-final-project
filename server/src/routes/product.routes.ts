@@ -1,5 +1,12 @@
 import {Router} from 'express';
-import {addProduct, deleteProduct, getProductById, getProducts, updateProduct} from '../controllers/product.controller';
+import {
+  addProduct, analyzeWithAI,
+  deleteProduct,
+  getProductById,
+  getProducts,
+  searchProducts,
+  updateProduct
+} from '../controllers/product.controller';
 import {
   addReviewForProduct,
   deleteReviewFromProduct,
@@ -11,6 +18,17 @@ const router = Router();
 
 /**
  * @swagger
+ * /analyze?name={name}:
+ *   get:
+ *     summary: Get price analysis of a product
+ *     responses:
+ *       200:
+ *         description: returns a list of products
+ */
+router.get('/analysis', analyzeWithAI)
+
+/**
+ * @swagger
  * /products:
  *   get:
  *     summary: Get all products
@@ -19,6 +37,18 @@ const router = Router();
  *         description: returns a list of products
  */
 router.get('', getProducts);
+
+
+/**
+ * @swagger
+ * /products:
+ *   get:
+ *     summary: Get all products
+ *     responses:
+ *       200:
+ *         description: returns a list of products
+ */
+router.get('/search', searchProducts);
 
 /**
  * @swagger

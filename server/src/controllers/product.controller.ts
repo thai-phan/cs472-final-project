@@ -1,8 +1,32 @@
 import {Request, Response, NextFunction} from 'express';
 import {Product} from "../models/product.model";
 
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  baseURL: 'https://api.deepseek.com',
+  apiKey: process.env.API_KEY
+});
+
+export const analyzeWithAI =  async (req: Request, res: Response, next: NextFunction) => {
+  const completion = await openai.chat.completions.create({
+    messages: [
+        { role: "system", content: `Get review of this item ${req.query.name}, 
+    and how about this price $${req.query.price} compare to previous 3 months. In 5 sentences.` }],
+    model: "deepseek-chat",
+  });
+
+  res.status(200).json(completion.choices[0].message.content);
+}
+
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
   const result = await Product.getProducts();
+  res.status(200).json(result);
+};
+
+export const searchProducts = async (req: Request, res: Response, next: NextFunction) => {
+  const {q, category} = req.query;
+  const result = await Product.searchProducts(q as string, category as string);
   res.status(200).json(result);
 };
 
