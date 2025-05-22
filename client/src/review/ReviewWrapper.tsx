@@ -5,17 +5,40 @@ import type {IReview} from "./IReview.ts";
 import ReviewAddForm from "./ReviewAddForm.tsx";
 
 
-
-
 const ReviewWrapper = ({id}: { id: string }) => {
   const [reviews, setReviews] = useState<IReview[]>([]);
 
 
   const loadReviews = () => {
-    fetch(`http://localhost:3000/products/${id}/reviews`).then(res => res.json()).then(json => {
+    fetch(`http://localhost:3000/products/${id}/reviews`)
+        .then(res => res.json()).then(json => {
       console.log(json)
       setReviews(json)
     })
+  }
+
+  const onDeleteReview = (reviewId: number) => {
+    fetch(`http://localhost:3000/products/${id}/reviews/${reviewId}`, {
+      method: "DELETE"
+    }).then(res => res.json())
+        .then(json => {
+          console.log(json)
+          loadReviews()
+        })
+  }
+
+  const onEditReview = (reviewId: number) => {
+    fetch(`http://localhost:3000/products/${id}/reviews/${reviewId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    }).then(res => res.json())
+        .then(json => {
+          console.log(json)
+          loadReviews()
+        })
   }
 
   useEffect(() => {
@@ -33,23 +56,11 @@ const ReviewWrapper = ({id}: { id: string }) => {
               <span>Customer Reviews</span>
             </div>
           </div>
-
           <div className="mb-3">{reviews.length} reviews</div>
-          {/*<div className="reviews-filter">*/}
-          {/*  <span>Sort by:</span>*/}
-          {/*  <select>*/}
-          {/*    <option value="newest">Newest</option>*/}
-          {/*    <option value="oldest">Oldest</option>*/}
-          {/*    <option value="highest">Highest rating</option>*/}
-          {/*    <option value="lowest">Lowest rating</option>*/}
-          {/*  </select>*/}
-
-
-          {/*</div>*/}
           <div>
             {
               reviews.map((review, index) => (
-                  <ReviewCard key={index} review={review}/>
+                  <ReviewCard key={index} review={review} onDelete={onDeleteReview} onEdit={onEditReview}/>
               ))
             }
           </div>

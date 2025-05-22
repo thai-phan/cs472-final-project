@@ -18,7 +18,7 @@ export const updateReviewForProduct = async (req: Request, res: Response, next: 
 }
 
 export const deleteReviewFromProduct = async (req: Request, res: Response, next: NextFunction) => {
-  const result = await Review.deleteReview(req.body)
+  const result = await Review.deleteReview(req.params.rid);
   res.status(200).json(result);
 }
 

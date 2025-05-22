@@ -1,16 +1,26 @@
 import type {IReview} from "./IReview.ts";
 import React from "react";
-import aaa from "../../public/user.svg"
+import userImg from "../../public/user.svg"
 
-const ReviewCard = ({review}: { review: IReview }) => {
+const ReviewCard = (
+    {
+      review,
+      onDelete,
+      onEdit,
+    }: {
+      review: IReview,
+      onDelete: (id: number) => void,
+      onEdit: (id: number) => void,
+    }) => {
   const ShowStar = (rating: number) => {
     return "★".repeat(rating) + "☆".repeat(5 - rating);
   }
+
   return (
       <div className={"review flex"}>
         <div className="flex-1/2">
           <div className="review-user">
-            <img className={"inline mr-2"} src={aaa} height={50} width={50} alt=""/>
+            <img className={"inline mr-2"} src={userImg} height={50} width={50} alt=""/>
             <span>{review.author}</span>
           </div>
           <div className="review-email">{review.authorEmail}</div>
@@ -26,10 +36,10 @@ const ReviewCard = ({review}: { review: IReview }) => {
           </div>
           <div className={"flex-1/3"}>
             <div className={"mb-2"}>
-              <button>Edit review</button>
+              <button className={"btn btm-sm"} onClick={() => onEdit(review.id)}> Edit review</button>
             </div>
             <div>
-              <button>Delete review</button>
+              <button className={"btn btm-sm"} onClick={() => onDelete(review.id)}>Delete review</button>
             </div>
           </div>
         </div>

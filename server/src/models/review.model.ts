@@ -60,14 +60,14 @@ export class Review {
     return result;
   }
 
-  static deleteReview = async (id: number) => {
+  static deleteReview = async (id: string) => {
     const conn = await pool.getConnection();
     const result = await conn.query("DELETE FROM review WHERE id = ?", [id]);
     await conn.release();
     if (result.affectedRows === 0) {
       throw new Error('Error deleting review');
     }
-    return result;
+    return id;
   }
 }
 
