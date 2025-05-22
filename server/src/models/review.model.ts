@@ -3,18 +3,19 @@ import {Request, Response, NextFunction} from 'express';
 
 export class Review {
   id: number | null;
-  productId: string;
-  description: string;
+  productId: number;
   author: string;
+  authorEmail: string;
   rating: number;
-  comment: number;
+  comment: string;
   date: Date;
 
-  constructor(id: number, name: string, description: string, author: string, rating: number, comment: number, date: Date) {
+  constructor(id: number, productId: number, author: string, authorEmail: string,
+              rating: number, comment: string, date: Date) {
     this.id = id;
-    this.productId = name;
-    this.description = description;
+    this.productId = productId;
     this.author = author;
+    this.authorEmail = authorEmail;
     this.rating = rating;
     this.comment = comment;
     this.date = date;
@@ -23,7 +24,7 @@ export class Review {
   static getProductReviews = async (id: number) => {
     try {
       const conn = await pool.getConnection();
-      const [reviews] = await conn.query("SELECT * FROM review WHERE productId = ?", [id]);
+      const reviews = await conn.query("SELECT * FROM review WHERE product_id = ?", [id]);
       await conn.release();
       return reviews;
     } catch (error) {
@@ -32,19 +33,26 @@ export class Review {
   }
 
   static addReview = async (review: Review) => {
-    const {description, author, rating, comment, date} = review;
+    const {productId, author, authorEmail, rating, comment, date} = review;
+    if (!productId || !author || !authorEmail || !rating || !comment || !date) {
+      throw new Error('Missing required fields');
+    }
     const conn = await pool.getConnection();
-    const result = await conn.query("INSERT INTO review (description, author, rating, comment, date) VALUES (?, ?, ?, ?, ?)",
-        [description, author, rating, comment, date]);
+    const result = await conn.query("INSERT INTO review (product_id, author, author_email, rating, comment, date) VALUES (?, ?, ?, ?, ?, ?)",
+        [productId, author, authorEmail, rating, comment, new Date(date)]);
     await conn.release();
     return result;
   }
 
   static updateReview = async (review: Review) => {
-    const {id, description, author, rating, comment, date} = review;
+    const {id, productId, author, authorEmail, rating, comment, date} = review;
+    if (!productId || !author || !authorEmail || !rating || !comment || !date) {
+      throw new Error('Missing required fields');
+    }
     const conn = await pool.getConnection();
-    const result = await conn.query("UPDATE review SET  description = ?, author = ?, rating = ? , comment = ?, date = ? WHERE id = ?",
-        [description, author, rating, comment, date, id]);
+    const result = await conn.query("UPDATE review SET  product_id = ?, author = ?, author_email = ?, " +
+        "rating = ? , comment = ?, date = ? WHERE id = ?",
+        [productId, author, authorEmail, rating, comment, new Date(date), id]);
     await conn.release();
     if (result.affectedRows === 0) {
       throw new Error('Error updating review');

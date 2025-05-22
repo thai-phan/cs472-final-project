@@ -8,14 +8,21 @@ export class Product {
   category: string;
   dateAdded: Date;
   price: number;
+  averageRating: number;
+  imageUrl: string;
+  reviewCount: number;
 
-  constructor(id: number, name: string, category: string, description: string, dateAdded: Date, price: number) {
+  constructor(id: number, name: string, category: string, description: string, dateAdded: Date,
+              price: number, averageRating: number, imageUrl: string, reviewCount: number,) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.category = category;
     this.dateAdded = dateAdded;
     this.price = price;
+    this.averageRating = averageRating;
+    this.imageUrl = imageUrl;
+    this.reviewCount = reviewCount;
   }
 
   static getProducts = async () => {
@@ -23,7 +30,9 @@ export class Product {
       const conn = await pool.getConnection();
       const products = await conn.query("SELECT * FROM product");
       conn.release();
-      return products;
+      return products.map(((product: any) =>
+          new Product(product.id, product.name, product.category, product.description, product.date_added,
+              product.price, product.average_rating, product.image_url, product.review_count)));
     } catch (error) {
       throw new Error('Error fetching products');
     }
@@ -34,7 +43,8 @@ export class Product {
       const conn = await pool.getConnection();
       const [product] = await conn.query("SELECT * FROM product WHERE id = ?", [id]);
       await conn.release();
-      return product;
+      return new Product(product.id, product.name, product.category, product.description, product.date_added,
+          product.price, product.average_rating, product.image_url, product.review_count);
     } catch (error) {
       throw new Error('Error fetching product');
     }

@@ -1,5 +1,4 @@
 import {Request, Response, NextFunction} from 'express';
-import {pool} from '../models/db';
 import {Product} from "../models/product.model";
 
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {

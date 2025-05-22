@@ -2,8 +2,8 @@ import {Request, Response, NextFunction} from 'express';
 import {Review} from "../models/review.model";
 
 export const getReviewFromProduct = async (req: Request, res: Response, next: NextFunction) => {
-  const {id} = req.params;
-  const result = await Review.getProductReviews(parseInt(id));
+  const {pid} = req.params;
+  const result = await Review.getProductReviews(parseInt(pid));
   res.status(200).json(result);
 };
 
