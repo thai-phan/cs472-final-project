@@ -1,9 +1,10 @@
-import React, {createContext, type Dispatch, type SetStateAction, useEffect, useState} from "react";
+import React, {createContext, type Dispatch, type SetStateAction, useContext, useEffect, useState} from "react";
 
 import ReviewCard from "./ReviewCard.tsx";
 import type {IReview} from "./IReview.ts";
 import ReviewAddForm from "./ReviewAddForm.tsx";
 import ReviewEditForm from "./ReviewEditForm.tsx";
+import {ProductContext} from "../product/ProductPage.tsx";
 
 interface ReviewContextProps {
   loadReviews: () => void;
@@ -14,10 +15,14 @@ interface ReviewContextProps {
 
 
 export const ReviewContext = createContext<ReviewContextProps>({
-  loadReviews: () => {},
-  addReview: (author: string, email: string, rating: number, comment: string) => {},
-  onDeleteReview: (reviewId: number | undefined) => {},
-  onEditReview: (review: IReview) => {}
+  loadReviews: () => {
+  },
+  addReview: (author: string, email: string, rating: number, comment: string) => {
+  },
+  onDeleteReview: (reviewId: number | undefined) => {
+  },
+  onEditReview: (review: IReview) => {
+  }
 });
 
 const ReviewWrapper = ({id}: { id: string }) => {
@@ -31,6 +36,9 @@ const ReviewWrapper = ({id}: { id: string }) => {
     comment: "comment",
     date: new Date(),
   } as IReview);
+
+  const {loadData} = useContext(ProductContext)
+
 
   const loadReviews = () => {
     fetch(`http://localhost:3000/products/${id}/reviews`)
@@ -58,8 +66,8 @@ const ReviewWrapper = ({id}: { id: string }) => {
       body: JSON.stringify(review),
     }).then(res => {
       if (res.ok) {
+        loadData()
         loadReviews()
-        // alert("Review added successfully");
       } else {
         alert("Failed to add review");
       }
@@ -73,7 +81,7 @@ const ReviewWrapper = ({id}: { id: string }) => {
       method: "DELETE"
     }).then(res => res.json())
         .then(json => {
-          console.log(json)
+          loadData()
           loadReviews()
         })
   }
@@ -88,7 +96,7 @@ const ReviewWrapper = ({id}: { id: string }) => {
       body: JSON.stringify(review),
     }).then(res => res.json())
         .then(json => {
-          console.log(json)
+          loadData()
           loadReviews()
         })
   }
@@ -121,7 +129,7 @@ const ReviewWrapper = ({id}: { id: string }) => {
           </div>
         </div>
         <div>
-            <ReviewEditForm review={selectedReview} />
+          <ReviewEditForm review={selectedReview}/>
         </div>
       </ReviewContext>
   )

@@ -3,14 +3,13 @@ import React, {type Dispatch, type SetStateAction} from "react";
 import userImg from "../../public/user.svg"
 import ReviewEditForm from "./ReviewEditForm.tsx";
 import {ReviewContext} from "./ReviewWrapper.tsx";
+import {ShowStar} from "../product/ProductPage.tsx";
 
 const ReviewCard = ({review, setReview}: { review: IReview, setReview: Dispatch<SetStateAction<IReview>> }) => {
 
   const {onDeleteReview} = React.useContext(ReviewContext);
 
-  const ShowStar = (rating: number) => {
-    return "★".repeat(rating) + "☆".repeat(5 - rating);
-  }
+
 
   const onEditLocal = () => {
     (document.getElementById('review_modal') as HTMLFormElement).showModal();
@@ -24,9 +23,8 @@ const ReviewCard = ({review, setReview}: { review: IReview, setReview: Dispatch<
             <img className={"inline mr-2"} src={userImg} height={50} width={50} alt=""/>
             <span>{review.author}</span>
           </div>
-          <div className="review-email">{review.authorEmail}</div>
-          <div className="review-date">{new Date(review.date).toLocaleDateString()}</div>
           <div className="review-rating">{ShowStar(review.rating)}</div>
+          <div className="review-date">{new Date(review.date).toLocaleDateString()}</div>
 
         </div>
         <div className={"flex flex-1/2"}>

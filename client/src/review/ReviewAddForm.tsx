@@ -7,11 +7,15 @@ const ReviewAddForm = ({onAdd}: {
   const [author, setAuthor] = useState("");
   const [email, setEmail] = useState("");
   const [comment, setComment] = useState("");
-  const [rating, setRating] = useState("5");
+  const [rating, setRating] = useState(5);
 
 
   const onAddLocal = () => {
-    onAdd(author, email, parseInt(rating), comment)
+    onAdd(author, email, rating, comment)
+    setAuthor("")
+    setEmail("")
+    setComment("")
+    setRating(5)
   }
 
   return (
@@ -20,7 +24,7 @@ const ReviewAddForm = ({onAdd}: {
         <div className="form-title">Write a Review</div>
 
         <select className="select" required value={rating} onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-          setRating(e.target.value)
+          setRating(parseInt(e.target.value))
         }}>
           <option value="5">★★★★★ - Excellent</option>
           <option value="4">★★★★☆ - Good</option>
