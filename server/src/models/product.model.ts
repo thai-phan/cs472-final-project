@@ -26,10 +26,14 @@ export class Product {
     this.reviewCount = reviewCount;
   }
 
-  static getProducts = async () => {
+  static getProducts = async (page: string) => {
     try {
       const conn = await pool.getConnection();
-      const products = await conn.query("SELECT * FROM product");
+      let offset = 10;
+      if (page) {
+        offset = (parseInt(page) - 1) * 10;
+      }
+      const products = await conn.query("SELECT * FROM product ORDER BY date_added DESC LIMIT 10 offset ?", [offset]);
       await conn.release();
       return products.map(((product: any) =>
           new Product(product.id, product.name, product.category, product.description, product.date_added,
@@ -47,7 +51,7 @@ export class Product {
       let products
       if (categories.length !== 0 && keyword) {
         products = await conn.query("SELECT * FROM product where name like ? and category in (?)", [`%${keyword}%`, categories]);
-      } else if(categories.length !== 0) {
+      } else if (categories.length !== 0) {
         products = await conn.query("SELECT * FROM product where category in (?)", [categories]);
       } else {
         products = await conn.query("SELECT * FROM product where name like ?", [`%${keyword}%`]);

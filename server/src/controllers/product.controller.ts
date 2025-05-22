@@ -20,7 +20,8 @@ export const analyzeWithAI =  async (req: Request, res: Response, next: NextFunc
 }
 
 export const getProducts = async (req: Request, res: Response, next: NextFunction) => {
-  const result = await Product.getProducts();
+  const {page} = req.query;
+  const result = await Product.getProducts(page as string);
   res.status(200).json(result);
 };
 
