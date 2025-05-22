@@ -1,4 +1,3 @@
-
 export interface IProduct {
   id: number;
   name: string;
@@ -6,4 +5,6 @@ export interface IProduct {
   description: string;
   dateAdded: Date;
   imageUrl: string;
+  reviewCount: number;
+  averageRating: number;
 }
