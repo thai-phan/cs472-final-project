@@ -18,7 +18,7 @@ const router = Router();
 
 /**
  * @swagger
- * /products/analysis?name={name}&price={price}:
+ * /products/analysis:
  *   get:
  *     summary: Get price analysis of a product
  *     parameters:
