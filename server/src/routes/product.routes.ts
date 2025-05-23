@@ -107,9 +107,16 @@ router.get('/:pid/reviews', getReviewFromProduct);
 
 /**
  * @swagger
- * /:pid/review:
+ * /:pid/reviews:
  *   post:
  *     summary: Create review for a product
+ *     parameters:
+ *     - name: pid
+ *       in: path
+ *       description: ID of the product
+ *       required: true
+ *       type: number
+ *
  *     requestBody:
  *       required: true
  *       description: review object
@@ -119,7 +126,7 @@ router.get('/:pid/reviews', getReviewFromProduct);
  *             type: object
  *             properties:
  *               productId:
- *                 type: string
+ *                 type: number
  *               author:
  *                 type: string
  *               authorEmail:

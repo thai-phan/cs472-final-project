@@ -9,7 +9,7 @@ export const getReviewFromProduct = async (req: Request, res: Response, next: Ne
 
 export const addReviewForProduct = async (req: Request, res: Response, next: NextFunction) => {
   let review: Review = await Review.addReview(req.body)
-  res.status(201).json({message: 'Product created successfully', reviewId: review.id});
+  res.status(201).json({message: 'Product created successfully', reviewId: req.query.pid});
 }
 
 export const updateReviewForProduct = async (req: Request, res: Response, next: NextFunction) => {
