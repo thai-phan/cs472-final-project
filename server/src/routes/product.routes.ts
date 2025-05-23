@@ -18,12 +18,23 @@ const router = Router();
 
 /**
  * @swagger
- * /analyze?name={name}:
+ * /products/analysis?name={name}&price={price}:
  *   get:
  *     summary: Get price analysis of a product
+ *     parameters:
+ *     - name: name
+ *       in: query
+ *       description: name of the product
+ *       type: string
+ *     - in: query
+ *       name: price
+ *       description: price of the product
+ *       type: number
  *     responses:
  *       200:
- *         description: returns a list of products
+ *         description: returns a price analysis of a product
+ *       404:
+ *         description: recommend not found
  */
 router.get('/analysis', analyzeWithAI)
 
@@ -32,18 +43,34 @@ router.get('/analysis', analyzeWithAI)
  * /products:
  *   get:
  *     summary: Get all products
+ *     parameters:
+ *     - name: page
+ *       in: query
+ *       description: page number
+ *       type: number
  *     responses:
  *       200:
  *         description: returns a list of products
+ *       404:
+ *         description: products not found
  */
 router.get('', getProducts);
 
 
 /**
  * @swagger
- * /products:
+ * /products/search:
  *   get:
- *     summary: Get all products
+ *     summary: Search products
+ *     parameters:
+ *     - name: q
+ *       in: query
+ *       description: search query
+ *       type: string
+ *     - name: category
+ *       in: query
+ *       description: category
+ *       type: string
  *     responses:
  *       200:
  *         description: returns a list of products
@@ -55,44 +82,17 @@ router.get('/search', searchProducts);
  * /:id:
  *   get:
  *     summary: Get product by ID
+ *     parameters:
+ *     - name: id
+ *       in: path
+ *       description: ID of the product
+ *       required: true
+ *       type: number
  *     responses:
  *       200:
  *         description: returns a product
  */
 router.get('/:id', getProductById)
-
-/**
- * @swagger
- * /create:
- *   post:
- *     summary: create product
- *     responses:
- *       200:
- *         description: returns a new product
- */
-router.post('/create', addProduct)
-
-/**
- * @swagger
- * /:id:
- *   post:
- *     summary: create product
- *     responses:
- *       200:
- *         description: returns a new product
- */
-router.put('/update/:id', updateProduct);
-
-/**
- * @swagger
- * /:id:
- *   delete:
- *     summary: delete product
- *     responses:
- *       200:
- *         description: returns a new product
- */
-router.delete('/delete/:id', deleteProduct);
 
 /**
  * @swagger
@@ -109,21 +109,77 @@ router.get('/:pid/reviews', getReviewFromProduct);
  * @swagger
  * /:pid/review:
  *   post:
- *     summary: Add a review for a product
+ *     summary: Create review for a product
+ *     requestBody:
+ *       required: true
+ *       description: review object
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               productId:
+ *                 type: string
+ *               author:
+ *                 type: string
+ *               authorEmail:
+ *                 type: string
+ *               rating:
+ *                 type: number
+ *               comment:
+ *                 type: string
+ *               date:
+ *                 type: string
  *     responses:
  *       200:
  *         description: returns a new review
+ *       400:
+ *         description: missing required fields
  */
+
+let a = {
+  "productId": 6,
+  "author": "Thai",
+  "authorEmail": "thai@miu.edu",
+  "rating": 5,
+  "comment": "Nice",
+  "date": "2025-05-23T01:58:53.830Z"
+}
+
 router.post('/:pid/reviews', addReviewForProduct);
 
 /**
  * @swagger
  * /:pid/review/:rid:
  *   put:
- *     summary: Update a review for a product
+ *     summary: Update review for a product
+ *     requestBody:
+ *       required: true
+ *       description: review object
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: number
+ *               productId:
+ *                 type: string
+ *               author:
+ *                 type: string
+ *               authorEmail:
+ *                 type: string
+ *               rating:
+ *                 type: number
+ *               comment:
+ *                 type: string
+ *               date:
+ *                 type: string
  *     responses:
  *       200:
- *         description: returns the updated review
+ *         description: returns a new review
+ *       400:
+ *         description: missing required fields
  */
 router.put('/:pid/reviews/:rid', updateReviewForProduct);
 
@@ -132,6 +188,17 @@ router.put('/:pid/reviews/:rid', updateReviewForProduct);
  * /:pid/review/:rid:
  *   delete:
  *     summary: Delete a review for a product
+ *     parameters:
+ *     - name: pid
+ *       in: path
+ *       description: ID of the product
+ *       required: true
+ *       type: number
+ *     - name: rid
+ *       in: path
+ *       description: ID of the review
+ *       required: true
+ *       type: number
  *     responses:
  *       200:
  *         description: returns the deleted review
