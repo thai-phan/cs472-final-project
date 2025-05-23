@@ -1,4 +1,4 @@
-import React, {createContext, type Dispatch, type SetStateAction, useContext, useEffect, useState} from "react";
+import React, {createContext, useCallback, useContext, useEffect, useState} from "react";
 
 import ReviewCard from "./ReviewCard.tsx";
 import type {IReview} from "./IReview.ts";
@@ -39,14 +39,13 @@ const ReviewWrapper = ({id}: { id: string }) => {
 
   const {loadData} = useContext(ProductContext)
 
-
-  const loadReviews = () => {
+  const loadReviews = useCallback(() => {
     fetch(`http://localhost:3000/products/${id}/reviews`)
         .then(res => res.json()).then(json => {
       console.log(json)
       setReviews(json)
     })
-  }
+  }, [id])
 
   const addReview = (author: string, email: string, rating: number, comment: string) => {
     const review: IReview = {
@@ -80,7 +79,8 @@ const ReviewWrapper = ({id}: { id: string }) => {
     fetch(`http://localhost:3000/products/${id}/reviews/${reviewId}`, {
       method: "DELETE"
     }).then(res => res.json())
-        .then(json => {
+        .then((data) => {
+          console.log(data)
           loadData()
           loadReviews()
         })
@@ -95,7 +95,8 @@ const ReviewWrapper = ({id}: { id: string }) => {
       },
       body: JSON.stringify(review),
     }).then(res => res.json())
-        .then(json => {
+        .then((json) => {
+          console.log(json)
           loadData()
           loadReviews()
         })
@@ -104,7 +105,7 @@ const ReviewWrapper = ({id}: { id: string }) => {
 
   useEffect(() => {
     loadReviews()
-  }, []);
+  }, [loadReviews]);
 
   return (
       <ReviewContext value={{loadReviews, addReview, onDeleteReview, onEditReview}}>

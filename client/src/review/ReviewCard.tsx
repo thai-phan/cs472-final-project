@@ -1,7 +1,6 @@
 import type {IReview} from "./IReview.ts";
 import React, {type Dispatch, type SetStateAction} from "react";
 import userImg from "../../public/user.svg"
-import ReviewEditForm from "./ReviewEditForm.tsx";
 import {ReviewContext} from "./ReviewWrapper.tsx";
 import {ShowStar} from "../product/ProductPage.tsx";
 
