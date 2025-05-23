@@ -79,7 +79,7 @@ router.get('/search', searchProducts);
 
 /**
  * @swagger
- * /:id:
+ * /products/{id}:
  *   get:
  *     summary: Get product by ID
  *     parameters:
@@ -96,7 +96,7 @@ router.get('/:id', getProductById)
 
 /**
  * @swagger
- * /:pid/reviews:
+ * /products/{pid}/reviews:
  *   get:
  *     summary: Get all reviews for a product
  *     responses:
@@ -107,7 +107,7 @@ router.get('/:pid/reviews', getReviewFromProduct);
 
 /**
  * @swagger
- * /:pid/reviews:
+ * /products/{pid}/reviews:
  *   post:
  *     summary: Create review for a product
  *     parameters:
@@ -157,7 +157,7 @@ router.post('/:pid/reviews', addReviewForProduct);
 
 /**
  * @swagger
- * /:pid/review/:rid:
+ * /products/{pid}/review/{rid}:
  *   put:
  *     summary: Update review for a product
  *     requestBody:
@@ -192,7 +192,7 @@ router.put('/:pid/reviews/:rid', updateReviewForProduct);
 
 /**
  * @swagger
- * /:pid/review/:rid:
+ * /products/{pid}/review/{rid}:
  *   delete:
  *     summary: Delete a review for a product
  *     parameters:
